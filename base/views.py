@@ -196,3 +196,6 @@ def updateUser(request):
             form.save()
             return redirect('room-profile', pk=user.id)
     return render(request,'base/update-user.html',{'form':form})
+
+def topicsView(request):
+    return render(request,'topics.html')
