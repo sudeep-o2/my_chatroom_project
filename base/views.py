@@ -21,7 +21,7 @@ def home(request):
         Q(description__icontains=q)
          )
     
-    topics=Topic.objects.all()
+    topics=Topic.objects.all()[0:5]
 
     room_count=rooms.count()
 
@@ -198,4 +198,11 @@ def updateUser(request):
     return render(request,'base/update-user.html',{'form':form})
 
 def topicsView(request):
-    return render(request,'topics.html')
+    q=request.GET.get('q') if request.GET.get('q') != None else ''
+    topics=Topic.objects.filter(name__icontains=q)
+    return render(request,'base/topics.html',{'topics':topics})
+
+
+def activityView(request):
+    room_messages=Messages.objects.all()
+    return render(request,'base/activity.html',{'room_messages': room_messages})
