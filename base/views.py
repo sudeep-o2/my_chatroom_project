@@ -1,13 +1,13 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from . models import Room,Topic,Messages
-from .forms import RoomForm,UserForm
+from . models import Room,Topic,Messages,User
+from .forms import RoomForm,UserForm,myUserCreationForm
 from django.db.models import Q
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm  
+ 
 
 
 # Create your views here.
@@ -131,15 +131,15 @@ def Loginview(request):
         return redirect('home')
 
     if request.method=='POST':
-        username=request.POST.get('username').lower()
+        email=request.POST.get('email').lower()
         password=request.POST.get('password')
         
         try:
-            user=User.objects.get(username=username)
+            user=User.objects.get(email=email)
         except:
             messages.error(request, "User not found.")
 
-        user=authenticate(request,username=username,password=password)
+        user=authenticate(request,email=email,password=password)
         if user is not None:
             login(request,user)
             return redirect('home')
@@ -155,10 +155,10 @@ def Logoutview(request):
     return redirect('home')
 
 def Register(request):
-    form=UserCreationForm()
+    form=myUserCreationForm()
 
     if request.method=='POST':
-        form=UserCreationForm(request.POST)
+        form=myUserCreationForm(request.POST,request.FILES)
         if form.is_valid():
             user=form.save(commit=False)
             user.username=user.username.lower()
@@ -191,7 +191,7 @@ def updateUser(request):
     form=UserForm(instance=user)
 
     if request.method=='POST':
-        form=UserForm(request.POST,instance=user)
+        form=UserForm(request.POST,request.FILES,instance=user)
         if form.is_valid:
             form.save()
             return redirect('room-profile', pk=user.id)
