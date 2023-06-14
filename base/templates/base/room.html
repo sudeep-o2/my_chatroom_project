@@ -110,8 +110,16 @@
                     </a>
                   </div>
                   <div class="thread__details">
-                   {{message}}
+                   {{message.vmessage}}
                   </div>
+                  <div>
+                  <div style="float:left">
+                    <a href="{% url 'like' message.id %}">
+                    <small><button type="submit"><p> Like<span style="font-size:100%;color:red;">&hearts;  </span></p></button></small>
+                  </a>
+                  </div>
+                  <div style="float:right"><small>Total likes - {{message.messagelikes_set.all.count}} </small></div> 
+                </div>
                 </div>
                 {% endfor %}
               </div>

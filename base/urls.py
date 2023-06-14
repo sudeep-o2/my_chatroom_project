@@ -15,4 +15,5 @@ urlpatterns=[
     path('update-user/',views.updateUser,name='update-user'),
     path('topics/',views.topicsView,name='topics'),
     path('activity/',views.activityView,name='activity'),
+    path('like/<str:pk>/',views.likemessages,name='like'),
 ]

@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from . models import Room,Topic,Messages,User
+from . models import Room,Topic,Messages,User,MessageLikes
 from .forms import RoomForm,UserForm,myUserCreationForm
 from django.db.models import Q
 #from django.contrib.auth.models import User
@@ -38,6 +38,7 @@ def room(request,pk):
     rooms=Room.objects.get(id=pk)
     room_messages=rooms.messages_set.all().order_by('-created')
     participants=rooms.participants.all()
+
 
     if request.method=='POST':
         Messages.objects.create(
@@ -206,3 +207,20 @@ def topicsView(request):
 def activityView(request):
     room_messages=Messages.objects.all()
     return render(request,'base/activity.html',{'room_messages': room_messages})
+
+
+def likemessages(request,pk):
+
+    #total_likes=MessageLikes.objects.all().count()
+    p=Messages.objects.get(id=pk)
+    #total_likes=p.messagelikes_set.all().count()
+    
+    new_like,created=MessageLikes.objects.get_or_create(liker=request.user,message=p)
+
+    new_like.save()
+    return redirect(request.META['HTTP_REFERER'])
+
+    context={'total_likes':total_likes,'p':p}
+
+    return render(request,'base/room.html',context)
+    

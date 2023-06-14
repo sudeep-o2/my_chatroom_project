@@ -42,12 +42,37 @@ class Messages(models.Model):
 
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     room=models.ForeignKey(Room,on_delete=models.CASCADE)
-    body=models.TextField()
+    body=models.TextField(null=True,blank=True)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.body[0:80]
+        try:
+            self.body=self.body
+        except:
+            self.body='None'
+        return self.body
 
     class Meta:
         ordering=['-updated','-created']
+
+
+    @property
+    def vmessage(self):
+        try:
+            message=self.body
+        except:
+            message=''
+        return message
+
+class MessageLikes(models.Model):
+
+    liker=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    message=models.ForeignKey(Messages,on_delete=models.CASCADE,null=True,blank=True)
+    
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.liker)
+
+
